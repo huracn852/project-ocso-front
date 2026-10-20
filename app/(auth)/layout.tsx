@@ -14,7 +14,8 @@ export default function AuthLayout({
           alt="Logo de OCSO"
           width={300}
           height={100}
-          className="h-auto w-[300px]"
+          loading="eager"
+          style={{ width: "300px", height: "auto" }}
         />
         {children}
       </div>
