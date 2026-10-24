@@ -1,5 +1,4 @@
 import { API_URL, TOKEN_NAME } from "@/constants";
-import axios from "axios";
 import { cookies } from "next/headers";
 import type { Location, Manager } from "@/entities";
 import Selectlocation from "./_components/SelectLocation";
@@ -68,26 +67,58 @@ const LocationsPage = async ({
     const selectedStore = Array.isArray(store) ? store[0] : store;
     const cookieStore = await cookies();
     const token = cookieStore.get(TOKEN_NAME)?.value;
-    const countLocations = await axios.get<Location[]>(`${API_URL}/locations`, {
-        headers: token ? { Authorization: ["Bearer ", token].join("") } : {},
+    const locationsResponse = await fetch(`${API_URL}/locations`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
+    if (!locationsResponse.ok) {
+        throw new Error(`No se pudieron cargar las tiendas (${locationsResponse.status}).`);
+    }
+    const locationData: Location[] = await locationsResponse.json();
+
     let managerResult: ReturnType<typeof getManagerOptions>;
     try {
-        const managersResponse = await axios.get<unknown>(`${API_URL}/managers`, {
+        const managersResponse = await fetch(`${API_URL}/managers`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
-        managerResult = getManagerOptions(managersResponse.data);
+
+        if (managersResponse.ok) {
+            managerResult = getManagerOptions(await managersResponse.json());
+        } else {
+            let message: string | string[] | undefined;
+            try {
+                const payload: unknown = await managersResponse.json();
+                if (typeof payload === "object" && payload !== null) {
+                    const apiMessage = (payload as Record<string, unknown>).message;
+                    if (typeof apiMessage === "string") {
+                        message = apiMessage;
+                    } else if (
+                        Array.isArray(apiMessage) &&
+                        apiMessage.every((item): item is string => typeof item === "string")
+                    ) {
+                        message = apiMessage;
+                    }
+                }
+            } catch (error) {
+                if (!(error instanceof SyntaxError)) {
+                    throw error;
+                }
+            }
+
+            managerResult = {
+                managers: [],
+                error: Array.isArray(message)
+                    ? message.join(", ")
+                    : message ?? "No se pudieron cargar los managers.",
+            };
+        }
     } catch (error) {
-        if (!axios.isAxiosError<{ message?: string | string[] }>(error)) {
+        if (!(error instanceof TypeError)) {
             throw error;
         }
 
-        const message = error.response?.data?.message;
         managerResult = {
             managers: [],
-            error: Array.isArray(message)
-                ? message.join(", ")
-                : message ?? "No se pudieron cargar los managers.",
+            error: "No se pudieron cargar los managers.",
         };
     }
 
@@ -98,7 +129,7 @@ const LocationsPage = async ({
             locationLatLng: [0, 0],
             locationAddress: "",
         },
-        ...countLocations.data,
+        ...locationData,
     ];
     const selectedLocation = locations.find(
         (location) => String(location.locationId) === selectedStore
@@ -121,7 +152,7 @@ const LocationsPage = async ({
                 <FormNewLocation
                     searchParams={params}
                     managers={managerResult.managers}
-                    locations={countLocations.data}
+                    locations={locationData}
                     managersError={managerResult.error}
                 />
                 {selectedStore && selectedStore !== "0" && (

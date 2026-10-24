@@ -1,4 +1,3 @@
-import axios from "axios";
 import { cookies } from "next/headers";
 import { API_URL, TOKEN_NAME } from "@/constants";
 import type { Manager } from "@/entities";
@@ -56,10 +55,13 @@ function getManagers(payload: unknown): ManagerSummary[] | null {
 
 export default async function ManagersPage() {
     const token = (await cookies()).get(TOKEN_NAME)?.value;
-    const { data } = await axios.get<unknown>(`${API_URL}/managers`, {
+    const response = await fetch(`${API_URL}/managers`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
-    const managers = getManagers(data);
+    if (!response.ok) {
+        throw new Error(`No se pudieron cargar los managers (${response.status}).`);
+    }
+    const managers = getManagers(await response.json());
 
     return (
         <main className="h-full w-4/12 overflow-y-auto p-8">

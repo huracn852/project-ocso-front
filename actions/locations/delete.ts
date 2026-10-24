@@ -1,7 +1,8 @@
 "use server";
 
 import { API_URL, TOKEN_NAME } from "@/constants";
-import axios from "axios";
+import { AuthHeaders } from "@/helpers/authHeaders";
+
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -17,9 +18,10 @@ export default async function deleteLocation(formData: FormData) {
         throw new Error("Inicia sesión para borrar una tienda.");
     }
 
-    await axios.delete(`${API_URL}/locations/${locationId}`, {
+    await fetch(`${API_URL}/locations/${locationId}`, {
+        method: "Delete",
         headers: {
-            Authorization: `Bearer ${token}`,
+            ...AuthHeaders,
         },
     });
 

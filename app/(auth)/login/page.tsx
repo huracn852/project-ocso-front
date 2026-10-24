@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Input, Button, Spinner } from "@nextui-org/react"
 import React, { useState } from "react";
-import axios from "axios";
+
 import { API_URL } from "@/constants";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const router = useRouter()
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
     setSubmitting(true);
     setErrorMessage("")
@@ -26,7 +26,7 @@ export default function LoginPage() {
     }
 
     try {
-      await axios.post<{ message: string }>(`${API_URL}/auth/login`, {
+      await fetch<{ message: string }>(`${API_URL}/auth/login`, {
         userEmail,
         userPassword
       }, {
@@ -34,7 +34,7 @@ export default function LoginPage() {
       })
       router.replace("/dashboard")
     } catch (error) {
-      if (axios.isAxiosError<{ message?: string | string[] }>(error)) {
+      if (fetch<{ message?: string | string[] }>(error)) {
         const apiMessage = error.response?.data?.message
         setErrorMessage(
           Array.isArray(apiMessage)
