@@ -18,12 +18,18 @@ export default async function deleteLocation(formData: FormData) {
         throw new Error("Inicia sesión para borrar una tienda.");
     }
 
-    await fetch(`${API_URL}/locations/${locationId}`, {
-        method: "Delete",
+    const response = await fetch(`${API_URL}/locations/${locationId}`, {
+        method: "DELETE",
         headers: {
-            ...AuthHeaders,
+            ...await AuthHeaders(),
         },
     });
+    if (!response.ok) {
+        if (response.status === 403) {
+            throw new Error("Solo una cuenta con rol Admin puede borrar tiendas.");
+        }
+        throw new Error(`No se pudo borrar la tienda (${response.status}).`);
+    }
 
     revalidatePath("/dashboard");
     redirect("/dashboard");

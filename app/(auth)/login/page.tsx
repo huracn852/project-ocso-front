@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const router = useRouter()
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSubmitting(true);
     setErrorMessage("")
@@ -26,25 +26,43 @@ export default function LoginPage() {
     }
 
     try {
-      await fetch<{ message: string }>(`${API_URL}/auth/login`, {
-        userEmail,
-        userPassword
-      }, {
-        withCredentials: true,
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userEmail, userPassword }),
       })
+
+      if (!response.ok) {
+        let message: string | string[] | undefined
+        try {
+          const payload: unknown = await response.json()
+          if (typeof payload === "object" && payload !== null) {
+            const apiMessage = (payload as Record<string, unknown>).message
+            if (typeof apiMessage === "string") {
+              message = apiMessage
+            } else if (
+              Array.isArray(apiMessage) &&
+              apiMessage.every((item): item is string => typeof item === "string")
+            ) {
+              message = apiMessage
+            }
+          }
+        } catch (error) {
+          if (!(error instanceof SyntaxError)) throw error
+        }
+        setErrorMessage(
+          Array.isArray(message)
+            ? message.join(", ")
+            : message ?? "No se pudo iniciar sesión."
+        )
+        return
+      }
+
       router.replace("/dashboard")
     } catch (error) {
-      if (fetch<{ message?: string | string[] }>(error)) {
-        const apiMessage = error.response?.data?.message
-        setErrorMessage(
-          Array.isArray(apiMessage)
-            ? apiMessage.join(", ")
-            : apiMessage ?? "No se pudo conectar con el servicio de inicio de sesión."
-        )
-      } else {
-        console.error("Unexpected login error:", error)
-        setErrorMessage("Ocurrió un error inesperado al iniciar sesión.")
-      }
+      console.error("Unexpected login error:", error)
+      setErrorMessage("No se pudo conectar con el servicio de inicio de sesión.")
     } finally {
       setSubmitting(false)
     }

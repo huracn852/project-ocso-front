@@ -5,6 +5,7 @@ import Selectlocation from "./_components/SelectLocation";
 import LocationCard from "./_components/LocationCard";
 import FormNewLocation from "./_components/FormNewLocation";
 import DeleteLocationButton from "./_components/DeleteLocationButton";
+import UpdateLocation from "./_components/UpdateLocation";
 
 type ManagerOption = Pick<Manager, "managerId" | "managerFullname">;
 
@@ -145,7 +146,9 @@ const LocationsPage = async ({
                     />
                     {selectedLocation && selectedLocation.locationId !== 0 && (
                         <div className="mt-4">
-                            <LocationCard location={selectedLocation} />
+                            <LocationCard
+                                location={selectedLocation}
+                            />
                         </div>
                     )}
                 </div>
@@ -155,9 +158,18 @@ const LocationsPage = async ({
                     locations={locationData}
                     managersError={managerResult.error}
                 />
-                {selectedStore && selectedStore !== "0" && (
-                    <DeleteLocationButton store={selectedStore} />
-                )}
+                {selectedStore &&
+                    selectedStore !== "0" &&
+                    selectedLocation &&
+                    selectedLocation.locationId !== 0 && (
+                        <div className="flex flex-col items-center gap-4">
+                            <DeleteLocationButton store={selectedStore} />
+                            <UpdateLocation
+                                location={selectedLocation}
+                                managers={managerResult.managers}
+                            />
+                        </div>
+                    )}
             </div>
         </div>
     );

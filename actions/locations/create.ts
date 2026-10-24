@@ -5,9 +5,6 @@ import { AuthHeaders } from "@/helpers/authHeaders";
 import { revalidateTag } from "next/cache";
 
 export async function createLocation(formData: FormData) {
-
-
-
     const location: Record<string, unknown> = {};
     const locationLatLng = [0, 0];
 
@@ -26,17 +23,16 @@ export async function createLocation(formData: FormData) {
 
     location.locationLatLng = locationLatLng;
 
-    const response = await fetch(
-        `${API_URL}/locations`, {
-        method: "Post"
-        
+    const response = await fetch(`${API_URL}/locations`, {
+        method: "POST",
         body: JSON.stringify(location),
-
         headers: {
-            ...authHeaders(),
+            "Content-Type": "application/json",
+            ...await AuthHeaders(),
         },
+    });
+    if (!response.ok) {
+        throw new Error(`No se pudo crear la tienda (${response.status}).`);
     }
-    );
-    if (response.status === 201) revalidateTag("dashboard:locations");
-
+    revalidateTag("dashboard:locations", "max");
 }
