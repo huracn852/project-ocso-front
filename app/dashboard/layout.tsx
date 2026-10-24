@@ -4,15 +4,15 @@ import Sidebar from "./_components/_sidebar/sidebar";
 
 export default function LayoutDashboard({
   children,
-  count
-}: Readonly<{ children: ReactNode;count:ReactNode }>) {
+  locations
+}: Readonly<{ children: ReactNode; locations: ReactNode }>) {
   return (
     <div className="flex h-screen w-screen flex-col bg-orange-50">
       <Header />
       <div className="flex min-h-0 flex-1">
         <Sidebar />
         {children}
-        {count}
+        {locations}
       </div>
     </div>
   );
