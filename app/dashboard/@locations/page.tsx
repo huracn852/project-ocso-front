@@ -5,6 +5,7 @@ import type { Location, Manager } from "@/entities";
 import Selectlocation from "./_components/SelectLocation";
 import LocationCard from "./_components/LocationCard";
 import FormNewLocation from "./_components/FormNewLocation";
+import DeleteLocationButton from "./_components/DeleteLocationButton";
 
 type ManagerOption = Pick<Manager, "managerId" | "managerFullname">;
 
@@ -62,7 +63,8 @@ const LocationsPage = async ({
 }: {
     searchParams: Promise<{ store?: string | string[] }>;
 }) => {
-    const { store } = await searchParams;
+    const params = await searchParams;
+    const { store } = params;
     const selectedStore = Array.isArray(store) ? store[0] : store;
     const cookieStore = await cookies();
     const token = cookieStore.get(TOKEN_NAME)?.value;
@@ -117,10 +119,14 @@ const LocationsPage = async ({
                     )}
                 </div>
                 <FormNewLocation
+                    searchParams={params}
                     managers={managerResult.managers}
                     locations={countLocations.data}
                     managersError={managerResult.error}
                 />
+                {selectedStore && selectedStore !== "0" && (
+                    <DeleteLocationButton store={selectedStore} />
+                )}
             </div>
         </div>
     );
