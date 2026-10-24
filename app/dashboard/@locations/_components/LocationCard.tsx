@@ -19,6 +19,9 @@ export default function LocationCard({
             <Divider />
             <CardBody>
                 <p className="w-full">
+                    Dirección: <b>{location.locationAddress}</b>
+                </p>
+                <p className="w-full">
                     Manager: <Link href="/dashboard/managers"> <b>{location.manager?.managerFullname ?? location.manager?.managerFullName ?? "Sin asignar"}</b></Link>
                 </p>
             </CardBody>

@@ -10,7 +10,7 @@ import {
     Button,
     useDisclosure,
 } from "@nextui-org/react";
-import { FaPenNib } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
 import FormUpdateLocation from "./FormUpdateLocation";
 
 type ManagerOption = Pick<Manager, "managerId" | "managerFullname">;
@@ -33,7 +33,7 @@ export default function UpdateLocation({
                 onPress={onOpen}
                 className="h-10 w-20 min-w-20 rounded-xl bg-blue-600 text-white hover:bg-blue-700"
             >
-                <FaPenNib size={18} />
+                <FaPen size={18} />
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>

@@ -162,7 +162,7 @@ const LocationsPage = async ({
                     selectedStore !== "0" &&
                     selectedLocation &&
                     selectedLocation.locationId !== 0 && (
-                        <div className="flex flex-col items-center gap-4">
+                        <div className="flex flex-row items-center justify-center gap-10">
                             <DeleteLocationButton store={selectedStore} />
                             <UpdateLocation
                                 location={selectedLocation}
