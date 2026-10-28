@@ -7,7 +7,7 @@ export default function ManagerCards({ manager }: { manager: Manager }) {
     const fullName = manager.managerFullname ?? manager.managerFullName ?? "";
 
     return (
-        <Card className="mx-10">
+        <Card className="shadow-sm transition-shadow hover:shadow-md">
             <CardHeader>
                 <p className="w-full">
                     Nombre: <b>{fullName}</b>
@@ -15,9 +15,6 @@ export default function ManagerCards({ manager }: { manager: Manager }) {
             </CardHeader>
             <Divider />
             <CardBody>
-                <p className="w-full">
-                    Nombre: <b>{fullName}</b>
-                </p>
                 <p className="w-full">
                     Email: <b>{manager.managerEmail}</b>
                 </p>

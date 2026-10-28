@@ -9,6 +9,9 @@ export default function LocationCard({
 }: {
     location: Location;
 }) {
+    const manager = location.manager;
+    const managerName = manager?.managerFullname ?? manager?.managerFullName;
+
     return (
         <Card>
             <CardHeader>
@@ -22,7 +25,14 @@ export default function LocationCard({
                     Dirección: <b>{location.locationAddress}</b>
                 </p>
                 <p className="w-full">
-                    Manager: <Link href="/dashboard/managers"> <b>{location.manager?.managerFullname ?? location.manager?.managerFullName ?? "Sin asignar"}</b></Link>
+                    Manager:{" "}
+                    {manager?.managerId && managerName ? (
+                        <Link href={`/dashboard/managers/${manager.managerId}`}>
+                            <b>{managerName}</b>
+                        </Link>
+                    ) : (
+                        <b>Sin asignar</b>
+                    )}
                 </p>
             </CardBody>
         </Card>
