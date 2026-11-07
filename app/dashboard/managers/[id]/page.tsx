@@ -1,6 +1,9 @@
 import { API_URL } from "@/constants";
-import type { Manager } from "@/entities";
+import type { Location, Manager } from "@/entities";
 import { AuthHeaders } from "@/helpers/authHeaders";
+import DeletemanagerButton from "./_components/DeleteManagerButton";
+import FormUpdateManager from "./_components/FormUpdateManager";
+import UpdateManager from "./_components/updateManager";
 
 export default async function ManagerPage({
     params,
@@ -38,6 +41,16 @@ export default async function ManagerPage({
     }
 
     const data: Manager = await response.json();
+    const locationsResponse = await fetch(`${API_URL}/locations`, {
+        headers: {
+            ...await AuthHeaders(),
+        },
+    });
+    if (!locationsResponse.ok) {
+        throw new Error(`No se pudieron cargar las tiendas (${locationsResponse.status}).`);
+    }
+
+    const locations: Location[] = await locationsResponse.json();
     const fullName = data.managerFullname ?? data.managerFullName ?? "";
     const coordinates = data.location?.locationLatLng;
     const hasCoordinates = coordinates?.length === 2
@@ -47,46 +60,54 @@ export default async function ManagerPage({
         : undefined;
 
     return (
-        <section className="w-full overflow-hidden rounded-xl border border-default-200 bg-white shadow-sm">
-            <header className="border-b border-default-200 p-4">
-                <h1 className="w-full text-center text-2xl font-semibold md:text-3xl">
-                    {fullName}
-                </h1>
-            </header>
-            <div className="p-5 md:p-6">
-                <div className="grid gap-5 xl:grid-cols-[1fr_1fr_1.6fr] xl:items-start">
-                    <div className="space-y-1">
-                        <p>Email: <b>{data.managerEmail}</b></p>
-                        <p>Teléfono: <b>{data.managerPhoneNumber}</b></p>
-                    </div>
-                    <div className="space-y-1">
-                        <p>
-                            Tienda:{" "}
-                            <b>
-                                {data.location
-                                    ? data.location.locationName
-                                    : "Sin asignar"}
-                            </b>
-                        </p>
-                        {data.location?.locationAddress && (
-                            <p>{data.location.locationAddress}</p>
+        <div className="flex w-full flex-col items-center gap-6">
+            <section className="w-full overflow-hidden rounded-xl border border-default-200 bg-white shadow-sm">
+                <header className="border-b border-default-200 p-4">
+                    <h1 className="w-full text-center text-2xl font-semibold md:text-3xl">
+                        {fullName}
+                    </h1>
+                </header>
+                <div className="p-5 md:p-6">
+                    <div className="grid gap-5 xl:grid-cols-[1fr_1fr_1.6fr] xl:items-start">
+                        <div className="space-y-1">
+                            <p>Email: <b>{data.managerEmail}</b></p>
+                            <p>Teléfono: <b>{data.managerPhoneNumber}</b></p>
+                        </div>
+                        <div className="space-y-1">
+                            <p>
+                                Tienda:{" "}
+                                <b>
+                                    {data.location
+                                        ? data.location.locationName
+                                        : "Sin asignar"}
+                                </b>
+                            </p>
+                            {data.location?.locationAddress && (
+                                <p>{data.location.locationAddress}</p>
+                            )}
+                        </div>
+                        {mapUrl ? (
+                            <iframe
+                                title={`Mapa de ${data.location?.locationName ?? "la tienda"}`}
+                                src={mapUrl}
+                                className="h-48 w-full rounded-md border border-orange-900 sm:h-52"
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            />
+                        ) : (
+                            <p className="text-sm text-default-500">
+                                No hay ubicación disponible para mostrar en el mapa.
+                            </p>
                         )}
                     </div>
-                    {mapUrl ? (
-                        <iframe
-                            title={`Mapa de ${data.location?.locationName ?? "la tienda"}`}
-                            src={mapUrl}
-                            className="h-48 w-full rounded-md border border-orange-900 sm:h-52"
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                        />
-                    ) : (
-                        <p className="text-sm text-default-500">
-                            No hay ubicación disponible para mostrar en el mapa.
-                        </p>
-                    )}
                 </div>
+            </section>
+            <div className="flex flex-col items-center gap-2">
+                <UpdateManager>
+                    <FormUpdateManager manager={data} stores={locations} />
+                </UpdateManager>
+                <DeletemanagerButton managerid={id} />
             </div>
-        </section>
+        </div>
     );
 }

@@ -19,7 +19,13 @@ export default function ManagersContent({
     const selectedManager = useSelectedLayoutSegment();
 
     return (
-        <div className="flex min-h-64 min-w-0 flex-1 items-center justify-center">
+        <div
+            className={`flex min-w-0 flex-1 ${
+                selectedManager
+                    ? "min-h-0 items-start overflow-y-auto py-4"
+                    : "min-h-64 items-center justify-center"
+            }`}
+        >
             {selectedManager ? (
                 children
             ) : (

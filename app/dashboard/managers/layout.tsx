@@ -3,8 +3,8 @@ import type { Manager } from "@/entities";
 import { AuthHeaders } from "@/helpers/authHeaders";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import ManagerCards from "./_components/ManagerCards";
-import ManagersContent from "./_components/ManagersContent";
+import ManagerCards from "./[id]/_components/ManagerCards";
+import ManagersContent from "./[id]/_components/ManagersContent";
 
 export default async function LayoutManagers({
     children,
