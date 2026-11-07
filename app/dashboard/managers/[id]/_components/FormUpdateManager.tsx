@@ -19,6 +19,11 @@ export default function FormUpdateManager({
             action={updateManagerWithId}
             className="w-full space-y-3 rounded-xl bg-orange-400 p-4"
         >
+            <input
+                type="hidden"
+                name="currentLocationId"
+                value={manager.location?.locationId ?? ""}
+            />
             <Input
                 label="Nombre"
                 defaultValue={manager.managerFullname ?? manager.managerFullName ?? ""}
