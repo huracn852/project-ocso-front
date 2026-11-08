@@ -1,5 +1,6 @@
 import { API_URL } from "@/constants";
 import { AuthHeaders } from "@/helpers/authHeaders";
+import Link from "next/link";
 import ProviderCard from "./_components/ProviderCard";
 import CreateProvider from "./_components/createProvider";
 import FormCreateProvider from "./_components/FormCreateProvider";
@@ -22,7 +23,14 @@ const ProviderPage = async () => {
             </div>
             <div className="mt-16 flex flex-wrap items-start gap-8 sm:gap-10">
                 {providers.map((provider) => (
-                    <ProviderCard provider={provider} key={provider.providerId} />
+                    <Link
+                        key={provider.providerId}
+                        href={`/dashboard/providers/${provider.providerId}`}
+                        aria-label={`Ver proveedor ${provider.providerName}`}
+                        className="rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-700"
+                    >
+                        <ProviderCard provider={provider} />
+                    </Link>
                 ))}
             </div>
         </main>
