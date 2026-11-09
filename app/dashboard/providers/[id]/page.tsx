@@ -3,6 +3,7 @@ import type { Product, Provider } from "@/entities";
 import { AuthHeaders } from "@/helpers/authHeaders";
 import Link from "next/link";
 import ProviderCard from "../_components/ProviderCard";
+import FormUpdateProvider from "./_components/FormUpdateProvider";
 import ProductCard from "./_components/Productcard";
 
 export default async function ProviderPage({
@@ -47,8 +48,12 @@ export default async function ProviderPage({
 
     return (
         <main className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto bg-[#fff8ed] px-6 py-8 sm:px-10">
-            <div className="pt-2">
-                <ProviderCard provider={provider} className="w-full max-w-[350px]" />
+            <div className="grid items-center gap-6 pt-2 lg:grid-cols-[minmax(280px,1fr)_minmax(0,2.2fr)]">
+                <ProviderCard
+                    provider={provider}
+                    className="w-full max-w-[350px] justify-self-center lg:justify-self-start"
+                />
+                <FormUpdateProvider provider={provider} />
             </div>
             <hr className="my-10 w-full border-0 border-t-[3px] border-[#5b1d08]" />
             {products.length > 0 ? (
