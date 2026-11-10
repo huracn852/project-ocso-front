@@ -3,6 +3,8 @@
 import updateProvider from "@/actions/providers/update";
 import type { Provider } from "@/entities";
 import { Button, Input } from "@nextui-org/react";
+import DeleteProviderButton from "./DeleteButton";
+import DeleteProvider from "../../_components/deleteProvider";
 
 export default function FormUpdateProvider({ provider }: { provider: Provider }) {
     const updateProviderWithId = updateProvider.bind(null, provider.providerId);
@@ -34,9 +36,14 @@ export default function FormUpdateProvider({ provider }: { provider: Provider })
                 name="providerPhoneNumber"
                 type="tel"
             />
-            <Button color="primary" type="submit" className="w-fit">
-                Actualizar
-            </Button>
+            <div className="flex flex-wrap items-center gap-3">
+                <Button color="primary" type="submit" className="w-fit">
+                    Actualizar
+                </Button>
+                <DeleteProvider providerName={provider.providerName}>
+                    <DeleteProviderButton providerId={provider.providerId} />
+                </DeleteProvider>
+            </div>
         </form>
     );
 }
