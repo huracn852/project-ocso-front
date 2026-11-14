@@ -3,9 +3,19 @@
 import type { Product } from "@/entities";
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({
+    product,
+    selected = false,
+}: {
+    product: Product;
+    selected?: boolean;
+}) {
     return (
-        <Card className="w-[214px] overflow-visible rounded-2xl border border-default-200 bg-white shadow-sm transition-transform duration-200 ease-out hover:z-10 hover:scale-105 hover:shadow-lg">
+        <Card
+            className={`w-full max-w-[220px] overflow-visible rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-lg ${
+                selected ? "border-orange-500 ring-1 ring-orange-500" : "border-default-200"
+            }`}
+        >
             <CardHeader className="min-h-12 border-b border-default-200 px-3 py-2 text-base font-normal">
                 {product.productName}
             </CardHeader>
@@ -14,6 +24,7 @@ export default function ProductCard({ product }: { product: Product }) {
                     Nombre del producto: <b>{product.productName}</b>
                 </p>
                 <p>Precio del producto: <b>{product.price}</b></p>
+                <p>Cant. de Sellos: <b>{product.countSeal}</b></p>
                 {product.provider?.providerName && (
                     <p>Proveedor: <b>{product.provider.providerName}</b></p>
                 )}

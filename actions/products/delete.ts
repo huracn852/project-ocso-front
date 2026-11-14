@@ -3,6 +3,7 @@
 import { API_URL } from "@/constants";
 import { AuthHeaders } from "@/helpers/authHeaders";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 export default async function deleteProduct(productId: string, _formData: FormData) {
     void _formData;
@@ -28,4 +29,5 @@ export default async function deleteProduct(productId: string, _formData: FormDa
     revalidateTag("dashboard:products", "max");
     revalidateTag("dashboard:provider", "max");
     revalidatePath("/dashboard/products");
+    redirect("/dashboard/products");
 }

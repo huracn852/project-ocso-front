@@ -2,7 +2,7 @@
 
 import { API_URL } from "@/constants";
 import { AuthHeaders } from "@/helpers/authHeaders";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export default async function createProduct(formData: FormData) {
     const productName = formData.get("productName");
@@ -49,4 +49,5 @@ export default async function createProduct(formData: FormData) {
 
     revalidateTag("dashboard:products", "max");
     revalidateTag("dashboard:provider", "max");
+    revalidatePath("/dashboard/products");
 }

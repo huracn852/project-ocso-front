@@ -3,6 +3,7 @@ import { API_URL } from "@/constants";
 import type { Product, Provider } from "@/entities";
 import { AuthHeaders } from "@/helpers/authHeaders";
 import FilteredCards from "./_components/FilteredCards";
+import CreateProductForm from "./_components/CreateProductForm";
 
 export default async function ProductsPage() {
     const response = await fetch(`${API_URL}/providers`, {
@@ -24,8 +25,8 @@ export default async function ProductsPage() {
     );
 
     return (
-        <main className="min-h-0 w-full flex-1 overflow-y-auto bg-[#fff8ed]">
-            <FilteredCards products={products} providers={providers} />
-        </main>
+        <FilteredCards products={products} providers={providers}>
+            <CreateProductForm providers={providers} />
+        </FilteredCards>
     );
 }
