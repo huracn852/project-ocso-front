@@ -4,6 +4,8 @@ import { AuthHeaders } from "@/helpers/authHeaders";
 import DeletemanagerButton from "./_components/DeleteManagerButton";
 import FormUpdateManager from "./_components/FormUpdateManager";
 import UpdateManager from "./_components/updateManager";
+import AccountFormModal from "@/app/dashboard/_components/AccountFormModal";
+import { LuPlus } from "react-icons/lu";
 
 export default async function ManagerPage({
     params,
@@ -63,9 +65,19 @@ export default async function ManagerPage({
         <div className="flex w-full flex-col items-center gap-6">
             <section className="w-full overflow-hidden rounded-xl border border-default-200 bg-white shadow-sm">
                 <header className="border-b border-default-200 p-4">
-                    <h1 className="w-full text-center text-2xl font-semibold md:text-3xl">
-                        {fullName}
-                    </h1>
+                    <div className="flex items-center justify-between gap-3">
+                        <h1 className="flex-1 text-center text-2xl font-semibold md:text-3xl">
+                            {fullName}
+                        </h1>
+                        <AccountFormModal
+                            accountType="manager"
+                            recordId={id}
+                            accountEmail={data.user?.userEmail}
+                            triggerLabel={data.user ? "Actualizar usuario del manager" : "Crear usuario para el manager"}
+                            triggerClassName="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white hover:bg-blue-700"
+                            trigger={<LuPlus size={22} aria-hidden="true" />}
+                        />
+                    </div>
                 </header>
                 <div className="p-5 md:p-6">
                     <div className="grid gap-5 xl:grid-cols-[1fr_1fr_1.6fr] xl:items-start">

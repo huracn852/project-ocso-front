@@ -3,8 +3,11 @@ import type { Manager } from "@/entities";
 import { AuthHeaders } from "@/helpers/authHeaders";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import type { Location } from "@/entities";
 import ManagerCards from "./[id]/_components/ManagerCards";
 import ManagersContent from "./[id]/_components/ManagersContent";
+import CreateManagerButton from "./_components/CreateManagerButton";
+import FormCreateManager from "./_components/FormCreateManager";
 
 export default async function LayoutManagers({
     children,
@@ -39,6 +42,15 @@ export default async function LayoutManagers({
     }
 
     const managers: Manager[] = await response.json();
+    const locationsResponse = await fetch(`${API_URL}/locations`, {
+        headers: {
+            ...await AuthHeaders(),
+        },
+    });
+    if (!locationsResponse.ok) {
+        throw new Error(`No se pudieron cargar las tiendas (HTTP ${locationsResponse.status}).`);
+    }
+    const locations: Location[] = await locationsResponse.json();
     const managersWithoutStore = managers.filter((manager) => manager.location == null).length;
     const salaries = managers
         .map((manager) => manager.managerSalary)
@@ -53,6 +65,11 @@ export default async function LayoutManagers({
     return (
         <div className="flex min-h-0 w-full flex-1 flex-col gap-5 p-4 md:flex-row md:gap-6 md:p-6">
             <div className="max-h-[35vh] w-full space-y-5 overflow-y-auto md:max-h-[90vh] md:w-5/12 md:max-w-[26rem] md:min-w-[16rem]">
+                <div className="sticky top-0 z-10 flex justify-end bg-[#fff8ed] pb-1">
+                    <CreateManagerButton>
+                        <FormCreateManager locations={locations} />
+                    </CreateManagerButton>
+                </div>
                 {managers.map((manager) => (
                     <Link
                         key={manager.managerId}

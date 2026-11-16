@@ -17,7 +17,13 @@ export interface Employee {
     employeeEmail: string;
     employeePhoto?: string;
     location?: Location;
-    user?: any;
+    user?: UserAccount | null;
+}
+
+export interface UserAccount {
+    userId?: string;
+    userEmail: string;
+    userRoles?: string[];
 }
 
 export interface Manager {
@@ -27,8 +33,8 @@ export interface Manager {
     managerSalary: number;
     managerEmail: string;
     managerPhoneNumber: string;
-    location: Location;
-    user: any;
+    location?: Location | null;
+    user?: UserAccount | null;
 }
 
 export interface Provider {
